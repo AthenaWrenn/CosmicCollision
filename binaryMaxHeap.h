@@ -24,6 +24,19 @@ public:
     void nodeScore(float s){
         score = s;
     }
+
+    //print out the information for this node
+    void printNode(){
+        cout << "Score: " << score;
+        cout << " Name: " << name;
+        cout << " ID: " << id;
+        cout << " Class: " << recClass;
+        cout << " Mass: " << mass << "g";
+        cout << " Year: " << year;
+        cout << " Latitude: " << recLat;
+        cout << " Longitude: " << recLon;
+        cout << endl;
+    }
 };
 
 class binaryMaxHeap{
@@ -53,6 +66,9 @@ class binaryMaxHeap{
 
         //get max from top of heap
         Node extractMax();
+
+        //access heapsize
+        int size();
 
 
 };
@@ -145,3 +161,7 @@ Node binaryMaxHeap::extractMax(){
     return max;
 }
 
+//access heapsize
+int binaryMaxHeap::size(){
+    return currentSize;
+}

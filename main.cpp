@@ -31,21 +31,30 @@ void importFile(binaryMaxHeap &bH){
     }
 
     //the rest of the lines are each nodes
+    int countSkipped = 0;
+    int countProcessed = 0;
     while(getline(myFile, line)){
         stringstream s(line);
         string word;
         vector<string> row;
 
         while (getline(s, word, ',')) { 
+            //if the , is in "" it isn't a new column
+            if(word[0] == '"'){
+                string secondHalf;
+                getline(s, secondHalf, ',');
+                word = word + secondHalf;
+            }
+
             row.push_back(word);
         } 
 
         //remove rows of incomplete data
         if(row[0].empty() || row[1].empty() || row[3].empty() || row[4].empty() || row[6].empty() || row[7].empty() || row[8].empty()){
-            cout << "Skipping incomplete tuple..." << endl;
+            countSkipped++;
+            //cout << "Skipping incomplete tuple..." <<  countSkipped << endl;
         } else{
             //file is setup: name, id, nametype, recclass, mass (g), fall, year, reclat, reclong, GeoLocation
-            cout << row[0] << endl;
             string name = row[0];
             int id = stoi(row[1]);
             string recClass = row[3];
@@ -56,10 +65,12 @@ void importFile(binaryMaxHeap &bH){
 
             Node currentNode = Node(name, id, recClass, mass, year, recLat, recLon);
             bH.insert(currentNode);
-        }
-
-        
+            countProcessed++;
+        }  
     }
+
+    cout << "Skipped " <<  countSkipped << " invalid tuples." << endl;
+    cout << "Processed " <<  countProcessed << " valid tuples." << endl;
 
 }
 
@@ -69,9 +80,12 @@ int main()
     int defaultHeapSize = 45717;
     binaryMaxHeap binaryHeap(defaultHeapSize);
     importFile(binaryHeap);
+    cout << "Size of the binary heap: " << binaryHeap.size() << endl;
 
-    // Prints hello world
-    cout << "Hello World";
+    //testing geting the max off the top
+    Node max = binaryHeap.extractMax();
+    max.printNode();
+    cout << "Size of the binary heap: " << binaryHeap.size() << endl;
  
     return 0;
 }
