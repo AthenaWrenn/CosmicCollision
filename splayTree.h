@@ -1,16 +1,17 @@
+#pragma once
 #include <iostream>
 #include <string>
 using namespace std;
 
 struct Node {
-    float score;
+    float score; //how wll does this meteorite match, default 0
     string name;
     int id;
     string recClass;
-    float mass;
+    float mass; //in g
     int year;
-    float recLat;
-    float recLon;
+    float recLat; //latitude
+    float recLon; //longitude
 
     Node* left;
     Node* right;
@@ -24,6 +25,7 @@ struct Node {
         score = s;
     }
 
+    //print out the information for this node
     void printNode(){
         cout << "Score: " << score;
         cout << " Name: " << name;
@@ -54,14 +56,16 @@ public:
     Node* search(int id);
     void remove(int id);
     void printInOrder();
-    void printInOrder(Node* node); // Helper function for printing in-order traversal
+    void printInOrder(Node* node); //helper function for printing in-order traversal
 };
 
 SplayTree::~SplayTree() {
-    // Implement destructor to delete nodes
+    while (root) {
+        remove(root->id);
+    }
 }
 
-// Splays the given node to the root
+//splays the given node to the root
 Node* SplayTree::splay(Node* node) {
     while (node->parent) {
         if (!node->parent->parent) {
@@ -86,7 +90,7 @@ Node* SplayTree::splay(Node* node) {
     return node;
 }
 
-// Finds the node with maximum key in the subtree rooted at the given node
+//finds the node with maximum key in the subtree rooted at the given node
 Node* SplayTree::findMax(Node* node) {
     if (!node)
         return nullptr;
@@ -95,7 +99,7 @@ Node* SplayTree::findMax(Node* node) {
     return node;
 }
 
-// Rotates the given node to the left
+//rotates the given node to the left
 void SplayTree::rotateLeft(Node* node) {
     if (!node || !node->right)
         return;
@@ -114,7 +118,7 @@ void SplayTree::rotateLeft(Node* node) {
     node->parent = pivot;
 }
 
-// Rotates the given node to the right
+//rotates the given node to the right
 void SplayTree::rotateRight(Node* node) {
     if (!node || !node->left)
         return;
@@ -133,7 +137,7 @@ void SplayTree::rotateRight(Node* node) {
     node->parent = pivot;
 }
 
-// Inserts a node into the splay tree
+//inserts a node into the splay tree
 void SplayTree::insert(Node* node) {
     if (!root) {
         root = node;
@@ -156,7 +160,7 @@ void SplayTree::insert(Node* node) {
     root = splay(node);
 }
 
-// Searches for a node with the given key and splays it to the root if found
+//searches for a node with the given key and splays it to the root if found
 Node* SplayTree::search(int id) {
     Node* current = root;
     while (current) {
@@ -171,7 +175,7 @@ Node* SplayTree::search(int id) {
     return nullptr;
 }
 
-// Removes a node with the given key from the splay tree
+//removes a node with the given key from the splay tree
 void SplayTree::remove(int id) {
     Node* node = search(id);
     if (!node)
@@ -197,12 +201,12 @@ void SplayTree::remove(int id) {
     delete node;
 }
 
-// Prints the elements of the splay tree in-order
+//prints the elements of the splay tree in-order
 void SplayTree::printInOrder() {
     printInOrder(root);
 }
 
-// Helper function to print the elements of the subtree rooted at the given node in-order
+//helper function to print the elements of the subtree rooted at the given node in-order
 void SplayTree::printInOrder(Node* node) {
     if (node) {
         printInOrder(node->left);
