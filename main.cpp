@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <cmath>
+
 #include "binaryMaxHeap.h"
 
 using namespace std;
@@ -74,6 +76,39 @@ void importFile(binaryMaxHeap &bH){
 
 }
 
+//calculate the accuracy of each specification; how close a match?
+void findAccuracies(int idealYear, float idealLat, float idealLon, float idealSize, string idealClass, Node &max){
+    //find how close the specified year is (between 0 and 1.0)
+    //100 years off scores a 0
+    float yearAccuracy = 1.0 - (abs(max.year - idealYear) / 100.0);
+    cout << yearAccuracy << endl;
+
+    //find how close the specified location is (between 0 and 1.0)
+    //100 miles off scores a 0
+    float locAccuracy;
+    float latDiff = max.recLat - idealLat;
+    float lonDiff = max.recLon - idealLon;
+    float locDiff = sqrt((latDiff * latDiff) + (lonDiff * lonDiff));
+    locAccuracy = 1.0 - (locDiff / 100.0);
+    cout << locAccuracy  << endl;
+
+    //find how close the specified size is (between 0 and 1.0)
+    //100g off scores a 0
+    float sizeAccuracy = 1.0 - (abs(max.mass - idealSize) / 100.0);
+    cout << sizeAccuracy << endl;
+
+    //Does the specified class match?
+    int classAccuracy;
+    if(max.recClass == idealClass){
+        classAccuracy = 1;
+    } else{
+        classAccuracy = 0;
+    }
+    cout << classAccuracy << endl;
+}
+
+
+
 int main()
 {
     //import the meteorite data into the 2 data structures
@@ -82,10 +117,81 @@ int main()
     importFile(binaryHeap);
     cout << "Size of the binary heap: " << binaryHeap.size() << endl;
 
+    //take in meteorite specifications
+    int idealYear;
+    cout << "Specify year: ";
+    cin >> idealYear;
+
+    float idealLat;
+    cout << "Specify latitude: ";
+    cin >> idealLat;
+
+    float idealLon;
+    cout << "Specify longitude: ";
+    cin >> idealLon;
+
+    float idealSize;
+    cout << "Specify size: ";
+    cin >> idealSize;
+
+    string idealClass;
+    cout << "Specify class: ";
+    cin >> idealClass;
+
+    //take in priority
+    int yearRank;
+    cout << "Rank importance of year(1-4): ";
+    cin >> yearRank;
+
+    int locRank;
+    cout << "Rank importance of location(1-4): ";
+    cin >> yearRank;
+
+    int sizeRank;
+    cout << "Rank importance of size(1-4): ";
+    cin >> yearRank;
+
+    int clRank;
+    cout << "Rank importance of class(1-4): ";
+    cin >> yearRank;
+
     //testing geting the max off the top
     Node max = binaryHeap.extractMax();
     max.printNode();
     cout << "Size of the binary heap: " << binaryHeap.size() << endl;
+
+    findAccuracies(idealYear, idealLat, idealLon, idealSize, idealClass, max);
+
+    //calculate score
+    /*
+    //find how close the specified year is (between 0 and 1.0)
+    //100 years off scores a 0
+    float yearAccuracy = 1.0 - (abs(max.year - idealYear) / 100.0);
+    cout << yearAccuracy << endl;
+
+    //find how close the specified location is (between 0 and 1.0)
+    //100 miles off scores a 0
+    float locAccuracy;
+    float latDiff = max.recLat - idealLat;
+    float lonDiff = max.recLon - idealLon;
+    float locDiff = sqrt((latDiff * latDiff) + (lonDiff * lonDiff));
+    locAccuracy = 1.0 - (locDiff / 100.0);
+    cout << locAccuracy  << endl;
+
+    //find how close the specified size is (between 0 and 1.0)
+    //100g off scores a 0
+    float sizeAccuracy = 1.0 - (abs(max.mass - idealSize) / 100.0);
+    cout << sizeAccuracy << endl;
+
+    //Does the specified class match?
+    int classAccuracy;
+    if(max.recClass == idealClass){
+        classAccuracy = 1;
+    } else{
+        classAccuracy = 0;
+    }
+    cout << classAccuracy << endl;
+    */
 
     return 0;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <string> 
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 //reference: geeksforgeeks.org/binary-heap
@@ -37,6 +38,7 @@ public:
         cout << " Longitude: " << recLon;
         cout << endl;
     }
+
 };
 
 class binaryMaxHeap{
