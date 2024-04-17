@@ -77,11 +77,14 @@ void importFile(binaryMaxHeap &bH){
 }
 
 //calculate the accuracy of each specification; how close a match?
-void findAccuracies(int idealYear, float idealLat, float idealLon, float idealSize, string idealClass, Node &max){
+vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, float idealSize, string idealClass, Node &max){
+    vector<float> matchVector;
+
     //find how close the specified year is (between 0 and 1.0)
     //100 years off scores a 0
     float yearAccuracy = 1.0 - (abs(max.year - idealYear) / 100.0);
-    cout << yearAccuracy << endl;
+    //cout << yearAccuracy << endl;
+    matchVector.push_back(yearAccuracy);
 
     //find how close the specified location is (between 0 and 1.0)
     //100 miles off scores a 0
@@ -90,21 +93,26 @@ void findAccuracies(int idealYear, float idealLat, float idealLon, float idealSi
     float lonDiff = max.recLon - idealLon;
     float locDiff = sqrt((latDiff * latDiff) + (lonDiff * lonDiff));
     locAccuracy = 1.0 - (locDiff / 100.0);
-    cout << locAccuracy  << endl;
+    //cout << locAccuracy  << endl;
+    matchVector.push_back(locAccuracy);
 
     //find how close the specified size is (between 0 and 1.0)
     //100g off scores a 0
     float sizeAccuracy = 1.0 - (abs(max.mass - idealSize) / 100.0);
-    cout << sizeAccuracy << endl;
+    //cout << sizeAccuracy << endl;
+    matchVector.push_back(sizeAccuracy);
 
     //Does the specified class match?
-    int classAccuracy;
+    float classAccuracy;
     if(max.recClass == idealClass){
-        classAccuracy = 1;
+        classAccuracy = 1.0;
     } else{
-        classAccuracy = 0;
+        classAccuracy = 0.0;
     }
-    cout << classAccuracy << endl;
+    //cout << classAccuracy << endl;
+    matchVector.push_back(classAccuracy);
+
+    return matchVector;
 }
 
 
@@ -145,53 +153,34 @@ int main()
 
     int locRank;
     cout << "Rank importance of location(1-4): ";
-    cin >> yearRank;
+    cin >> locRank;
 
     int sizeRank;
     cout << "Rank importance of size(1-4): ";
-    cin >> yearRank;
+    cin >> sizeRank;
 
     int clRank;
     cout << "Rank importance of class(1-4): ";
-    cin >> yearRank;
+    cin >> clRank;
 
     //testing geting the max off the top
     Node max = binaryHeap.extractMax();
     max.printNode();
     cout << "Size of the binary heap: " << binaryHeap.size() << endl;
 
-    findAccuracies(idealYear, idealLat, idealLon, idealSize, idealClass, max);
 
-    //calculate score
-    /*
-    //find how close the specified year is (between 0 and 1.0)
-    //100 years off scores a 0
-    float yearAccuracy = 1.0 - (abs(max.year - idealYear) / 100.0);
-    cout << yearAccuracy << endl;
+    //score a crash
+    vector<float> accuracies; // 0: year, 1: location, 2: size, 3: class
+    accuracies = findAccuracies(idealYear, idealLat, idealLon, idealSize, idealClass, max);
 
-    //find how close the specified location is (between 0 and 1.0)
-    //100 miles off scores a 0
-    float locAccuracy;
-    float latDiff = max.recLat - idealLat;
-    float lonDiff = max.recLon - idealLon;
-    float locDiff = sqrt((latDiff * latDiff) + (lonDiff * lonDiff));
-    locAccuracy = 1.0 - (locDiff / 100.0);
-    cout << locAccuracy  << endl;
+    float currentScore = 0;
+    currentScore = (yearRank * 10 * accuracies[0]) + (locRank * 10 * accuracies[1]) + (sizeRank * 10 * accuracies[2]) + (clRank * 10 * accuracies[3]);
 
-    //find how close the specified size is (between 0 and 1.0)
-    //100g off scores a 0
-    float sizeAccuracy = 1.0 - (abs(max.mass - idealSize) / 100.0);
-    cout << sizeAccuracy << endl;
+    //testing updating the score of this node
+    max.nodeScore(currentScore);
+    max.printNode();
 
-    //Does the specified class match?
-    int classAccuracy;
-    if(max.recClass == idealClass){
-        classAccuracy = 1;
-    } else{
-        classAccuracy = 0;
-    }
-    cout << classAccuracy << endl;
-    */
+    cout << "THE END" << endl;
 
     return 0;
 }
