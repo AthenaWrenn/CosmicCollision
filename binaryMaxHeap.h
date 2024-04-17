@@ -98,7 +98,7 @@ void binaryMaxHeap::swapNodes(Node *a, Node *b){
     *b = temp; 
 }
 
-// Insert a new node
+//insert a new node
 void binaryMaxHeap::insert(Node k){
     //check that there is room
     if (currentSize == capacity) { 
@@ -137,7 +137,7 @@ void binaryMaxHeap::heapify(int r){
        
     if (largest  != r) { 
         swapNodes(&hArray[r], &hArray[largest]); 
-        heapify(largest); //recurse!
+        heapify(largest); //recurse
     } 
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <map>
 using namespace std;
 
 struct Node {
@@ -36,6 +37,19 @@ struct Node {
         cout << " Latitude: " << recLat;
         cout << " Longitude: " << recLon;
         cout << endl;
+    }
+    //return the information of the node as a dictionary
+    map<string, string> getNodeInfo() {
+        map<string, string> nodeInfo;
+        nodeInfo["Score"] = to_string(score);
+        nodeInfo["Name"] = name;
+        nodeInfo["ID"] = to_string(id);
+        nodeInfo["Class"] = recClass;
+        nodeInfo["Mass"] = to_string(mass) + "g";
+        nodeInfo["Year"] = to_string(year);
+        nodeInfo["Latitude"] = to_string(recLat);
+        nodeInfo["Longitude"] = to_string(recLon);
+        return nodeInfo;
     }
 };
 
@@ -214,5 +228,3 @@ void SplayTree::printInOrder(Node* node) {
         printInOrder(node->right);
     }
 }
-
-
