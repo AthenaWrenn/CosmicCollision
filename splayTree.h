@@ -4,8 +4,8 @@
 #include <map>
 using namespace std;
 
-struct Node {
-    float score; //how wll does this meteorite match, default 0
+struct SplayNode {
+    float score; //how well does this meteorite match, default 0
     string name;
     int id;
     string recClass;
@@ -14,20 +14,20 @@ struct Node {
     float recLat; //latitude
     float recLon; //longitude
 
-    Node* left;
-    Node* right;
-    Node* parent;
-    Node(float s, string n, int i, string c, float m, int y, float lat, float lon)
+    SplayNode* left;
+    SplayNode* right;
+    SplayNode* parent;
+    SplayNode(float s, string n, int i, string c, float m, int y, float lat, float lon)
         : score(s), name(n), id(i), recClass(c), mass(m), year(y), recLat(lat), recLon(lon),
           left(nullptr), right(nullptr), parent(nullptr) {}
 
-    //assign a new score to the node
-    void nodeScore(float s){
+    //assign a new score to the SplayNode
+    void SplayNodeScore(float s){
         score = s;
     }
 
-    //print out the information for this node
-    void printNode(){
+    //print out the information for this SplayNode
+    void printSplayNode(){
         cout << "Score: " << score;
         cout << " Name: " << name;
         cout << " ID: " << id;
@@ -38,39 +38,39 @@ struct Node {
         cout << " Longitude: " << recLon;
         cout << endl;
     }
-    //return the information of the node as a dictionary
-    map<string, string> getNodeInfo() {
-        map<string, string> nodeInfo;
-        nodeInfo["Score"] = to_string(score);
-        nodeInfo["Name"] = name;
-        nodeInfo["ID"] = to_string(id);
-        nodeInfo["Class"] = recClass;
-        nodeInfo["Mass"] = to_string(mass) + "g";
-        nodeInfo["Year"] = to_string(year);
-        nodeInfo["Latitude"] = to_string(recLat);
-        nodeInfo["Longitude"] = to_string(recLon);
-        return nodeInfo;
+    //return the information of the SplayNode as a dictionary
+    map<string, string> getSplayNodeInfo() {
+        map<string, string> SplayNodeInfo;
+        SplayNodeInfo["Score"] = to_string(score);
+        SplayNodeInfo["Name"] = name;
+        SplayNodeInfo["ID"] = to_string(id);
+        SplayNodeInfo["Class"] = recClass;
+        SplayNodeInfo["Mass"] = to_string(mass) + "g";
+        SplayNodeInfo["Year"] = to_string(year);
+        SplayNodeInfo["Latitude"] = to_string(recLat);
+        SplayNodeInfo["Longitude"] = to_string(recLon);
+        return SplayNodeInfo;
     }
 };
 
 class SplayTree {
 private:
-    Node* root;
+    SplayNode* root;
 
-    Node* splay(Node* node);
-    Node* findMax(Node* node);
-    void rotateLeft(Node* node);
-    void rotateRight(Node* node);
+    SplayNode* splay(SplayNode* SplayNode);
+    SplayNode* findMax(SplayNode* SplayNode);
+    void rotateLeft(SplayNode* SplayNode);
+    void rotateRight(SplayNode* SplayNode);
 
 public:
     SplayTree() : root(nullptr) {}
     ~SplayTree();
 
-    void insert(Node* node);
-    Node* search(int id);
+    void insert(SplayNode* SplayNode);
+    SplayNode* search(int id);
     void remove(int id);
     void printInOrder();
-    void printInOrder(Node* node); //helper function for printing in-order traversal
+    void printInOrder(SplayNode* SplayNode); //helper function for printing in-order traversal
 };
 
 SplayTree::~SplayTree() {
@@ -79,104 +79,107 @@ SplayTree::~SplayTree() {
     }
 }
 
-//splays the given node to the root
-Node* SplayTree::splay(Node* node) {
-    while (node->parent) {
-        if (!node->parent->parent) {
-            if (node->parent->left == node)
-                rotateRight(node->parent);
+//splays the given SplayNode to the root
+SplayNode* SplayTree::splay(SplayNode* SplayNode) {
+    while (SplayNode->parent) {
+        if (!SplayNode->parent->parent) {
+            if (SplayNode->parent->left == SplayNode)
+                rotateRight(SplayNode->parent);
             else
-                rotateLeft(node->parent);
-        } else if (node->parent->left == node && node->parent->parent->left == node->parent) {
-            rotateRight(node->parent->parent);
-            rotateRight(node->parent);
-        } else if (node->parent->right == node && node->parent->parent->right == node->parent) {
-            rotateLeft(node->parent->parent);
-            rotateLeft(node->parent);
-        } else if (node->parent->left == node && node->parent->parent->right == node->parent) {
-            rotateRight(node->parent);
-            rotateLeft(node->parent);
+                rotateLeft(SplayNode->parent);
+        } else if (SplayNode->parent->left == SplayNode && SplayNode->parent->parent->left == SplayNode->parent) {
+            rotateRight(SplayNode->parent->parent);
+            rotateRight(SplayNode->parent);
+        } else if (SplayNode->parent->right == SplayNode && SplayNode->parent->parent->right == SplayNode->parent) {
+            rotateLeft(SplayNode->parent->parent);
+            rotateLeft(SplayNode->parent);
+        } else if (SplayNode->parent->left == SplayNode && SplayNode->parent->parent->right == SplayNode->parent) {
+            rotateRight(SplayNode->parent);
+            rotateLeft(SplayNode->parent);
         } else {
-            rotateLeft(node->parent);
-            rotateRight(node->parent);
+            rotateLeft(SplayNode->parent);
+            rotateRight(SplayNode->parent);
         }
     }
-    return node;
+    return SplayNode;
 }
 
-//finds the node with maximum key in the subtree rooted at the given node
-Node* SplayTree::findMax(Node* node) {
-    if (!node)
+//finds the SplayNode with maximum key in the subtree rooted at the given SplayNode
+SplayNode* SplayTree::findMax(SplayNode* SplayNode) {
+    if (!SplayNode)
         return nullptr;
-    while (node->right)
-        node = node->right;
-    return node;
+    while (SplayNode->right)
+        SplayNode = SplayNode->right;
+    return SplayNode;
 }
 
-//rotates the given node to the left
-void SplayTree::rotateLeft(Node* node) {
-    if (!node || !node->right)
-        return;
-    Node* pivot = node->right;
-    node->right = pivot->left;
-    if (pivot->left)
-        pivot->left->parent = node;
-    pivot->parent = node->parent;
-    if (!node->parent)
-        root = pivot;
-    else if (node == node->parent->left)
-        node->parent->left = pivot;
-    else
-        node->parent->right = pivot;
-    pivot->left = node;
-    node->parent = pivot;
-}
-
-//rotates the given node to the right
-void SplayTree::rotateRight(Node* node) {
-    if (!node || !node->left)
-        return;
-    Node* pivot = node->left;
-    node->left = pivot->right;
-    if (pivot->right)
-        pivot->right->parent = node;
-    pivot->parent = node->parent;
-    if (!node->parent)
-        root = pivot;
-    else if (node == node->parent->left)
-        node->parent->left = pivot;
-    else
-        node->parent->right = pivot;
-    pivot->right = node;
-    node->parent = pivot;
-}
-
-//inserts a node into the splay tree
-void SplayTree::insert(Node* node) {
-    if (!root) {
-        root = node;
+//rotates the given SplayNode to the left
+void SplayTree::rotateLeft(SplayNode* current) {
+    if (!current || !current->right) {
         return;
     }
-    Node* current = root;
-    Node* parent = nullptr;
+    SplayNode* pivot = current->right; // Declare the 'pivot' variable
+    current->right = pivot->left;
+    if (pivot->left) {
+        pivot->left->parent = current;
+    }
+    pivot->parent = current->parent;
+    if (!current->parent) {
+        root = pivot;
+    } else if (current == current->parent->left) {
+        current->parent->left = pivot;
+    } else {
+        current->parent->right = pivot;
+    }
+    pivot->left = current;
+    current->parent = pivot;
+}
+
+//rotates the given SplayNode to the right
+void SplayTree::rotateRight(SplayNode* current) {
+    if (!current || !current->left)
+        return;
+    SplayNode* pivot = current->left;
+    current->left = pivot->right;
+    if (pivot->right)
+        pivot->right->parent = current;
+    pivot->parent = current->parent;
+    if (!current->parent)
+        root = pivot;
+    else if (current == current->parent->left)
+        current->parent->left = pivot;
+    else
+        current->parent->right = pivot;
+    pivot->right = current;
+    current->parent = pivot;
+}
+
+//inserts a SplayNode into the splay tree
+void SplayTree::insert(SplayNode* current) {
+    if (!root) {
+        root = current;
+        return;
+    }
+    SplayNode* current = root;
+    SplayNode* parent = nullptr;
     while (current) {
         parent = current;
-        if (node->id < current->id)
+        if (current->id < current->id)
             current = current->left;
         else
             current = current->right;
     }
-    node->parent = parent;
-    if (node->id < parent->id)
-        parent->left = node;
+    current->parent = parent;
+    if (current->id < parent->id)
+        parent->left = current;
     else
-        parent->right = node;
-    root = splay(node);
+        parent->right = current;
+    root = splay(current);
 }
 
-//searches for a node with the given key and splays it to the root if found
-Node* SplayTree::search(int id) {
-    Node* current = root;
+//searches for a SplayNode with the given key and splays it to the root if found
+SplayNode* SplayTree::search(int id) {
+    SplayNode* current = root;
     while (current) {
         if (current->id == id) {
             root = splay(current);
@@ -189,42 +192,5 @@ Node* SplayTree::search(int id) {
     return nullptr;
 }
 
-//removes a node with the given key from the splay tree
-void SplayTree::remove(int id) {
-    Node* node = search(id);
-    if (!node)
-        return;
-    if (!node->left) {
-        root = node->right;
-    } else if (!node->right) {
-        root = node->left;
-    } else {
-        Node* maxLeft = findMax(node->left);
-        if (maxLeft->parent != node) {
-            maxLeft->parent->right = maxLeft->left;
-            if (maxLeft->left)
-                maxLeft->left->parent = maxLeft->parent;
-            maxLeft->left = node->left;
-            node->left->parent = maxLeft;
-        }
-        maxLeft->right = node->right;
-        if (node->right)
-            node->right->parent = maxLeft;
-        root = maxLeft;
-    }
-    delete node;
-}
 
-//prints the elements of the splay tree in-order
-void SplayTree::printInOrder() {
-    printInOrder(root);
-}
 
-//helper function to print the elements of the subtree rooted at the given node in-order
-void SplayTree::printInOrder(Node* node) {
-    if (node) {
-        printInOrder(node->left);
-        cout << "Score: " << node->score << ", Name: " << node->name << ", ID: " << node->id << endl;
-        printInOrder(node->right);
-    }
-}

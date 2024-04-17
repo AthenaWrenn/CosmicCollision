@@ -7,7 +7,7 @@
 #include <cmath>
 
 #include "binaryMaxHeap.h"
-
+#include "splayTree.h"
 using namespace std;
 //Team Name: Cosmic Collision
 //Team Members:  Thomas Chavarria, Joseph Molina, and Athena Wrenn
