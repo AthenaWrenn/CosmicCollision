@@ -131,39 +131,47 @@ void binaryMaxHeap::heapify(int r){
     int rightChild = (2*r) + 2; 
     int largest = r; 
 
-    if ((rightChild < currentSize) && (hArray[rightChild].score > hArray[largest].score)){
-        //the right child is the largest 
+    // Check if left child is larger than root
+    if (leftChild < currentSize && hArray[leftChild].score > hArray[largest].score){
+        largest = leftChild; 
+    }
+
+    // Check if right child is larger than largest so far
+    if (rightChild < currentSize && hArray[rightChild].score > hArray[largest].score){
         largest = rightChild; 
     }
-        
-    if ((r < currentSize) && (hArray[leftChild].score > hArray[largest].score)){
-        //the left child is the largest 
-        largest = leftChild; 
-    } 
        
-    if (largest  != r) { 
+    // If largest is not root
+    if (largest != r) { 
         swapNodes(&hArray[r], &hArray[largest]); 
-        heapify(largest); //recurse
+
+        // Recursively heapify the affected sub-tree
+        heapify(largest); 
     } 
 }
 
 //get max from top of heap
 Node binaryMaxHeap::extractMax(){
+
     //check edge cases first
     if (currentSize <= 0){
+
         cout << "\nError: Heap Empty\n";
         Node emptyNode;
         return emptyNode; 
     } else if (currentSize == 1) { 
+
         currentSize--; 
         return hArray[0]; 
     } 
 
     //usual case
+
     Node max = hArray[0];
     hArray[0] = hArray[currentSize-1]; 
     currentSize--; 
     heapify(0);
+
     return max;
 }
 

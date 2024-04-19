@@ -71,7 +71,7 @@ void importFile(binaryMaxHeap &bH, vector<Node> &nodes){
     int countProcessed = 0;
 
 
-    while(getline(myFile, line) && countProcessed < 20) {
+    while(getline(myFile, line)) {
         stringstream s(line);
         string word;
         vector<string> row;
@@ -113,11 +113,11 @@ void importFile(binaryMaxHeap &bH, vector<Node> &nodes){
             //testing updating the score of this node
             currentNode.nodeScore(currentScore);
 
-            if(currentNode.getScore() > 0){
-                nodes.push_back(currentNode);
-                bH.insert(currentNode);
-                countProcessed++;
-            }
+            // if(currentNode.getScore() > 0){
+            nodes.push_back(currentNode);
+            bH.insert(currentNode);
+            countProcessed++;
+            // }
            
         }  
     }
@@ -164,12 +164,12 @@ vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, floa
 int main()
 {
     //import the meteorite data into the 2 data structures
-    // int defaultHeapSize = 45717;  
     binaryMaxHeap binaryHeap;
     vector<Node> nodes;
 
     importFile(binaryHeap, nodes);
     cout << "Size of the binary heap: " << binaryHeap.size() << endl;
+    cout << "Size of the node list: " << nodes.size() << endl;
 
     
 
