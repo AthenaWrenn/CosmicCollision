@@ -8,6 +8,7 @@
 
 #include "binaryMaxHeap.h"
 #include "splayTree.h"
+#include "quickSort.h"
 using namespace std;
 //Team Name: Cosmic Collision
 //Team Members:  Thomas Chavarria, Joseph Molina, and Athena Wrenn
@@ -19,7 +20,7 @@ using namespace std;
 //read the csv file into the binary heap
 void importFile(binaryMaxHeap &bH){
  
-    string fileName = "../Meteorite_Landings.csv";
+    string fileName = "Meteorite_Landings.csv";
     ifstream myFile(fileName);
 
     if(!myFile.is_open()){

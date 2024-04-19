@@ -26,6 +26,10 @@ public:
         score = s;
     }
 
+    float getScore(){
+        return score;
+    }
+
     //print out the information for this node
     void printNode(){
         cout << "Score: " << score;
