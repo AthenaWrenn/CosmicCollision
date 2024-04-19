@@ -4,6 +4,8 @@
 #include <sstream>
 #include <vector>
 #include <cmath>
+#include <chrono>
+
 
 #include "binaryMaxHeap.h"
 #include "splayTree.h"
@@ -168,7 +170,8 @@ int main()
 
     cout << "Size of the data: " << needsSort.size() << endl;
 
-    
+    auto startHeapTime = std::chrono::high_resolution_clock::now();
+
     //testing the binary heap
     for(auto &node : needsSort){
         binaryHeap.insert(node);
@@ -178,22 +181,32 @@ int main()
         max.printNode();
     }
 
+    auto endHeapTime = chrono::high_resolution_clock::now();
+
+    //calculate the duration in seconds
+    chrono::duration<double> durationHeap = endHeapTime - startHeapTime;
+    double elapsedHeapTime = durationHeap.count();
+    
+    cout << endl << endl;
+
+    
+
+    auto startQuickTime = std::chrono::high_resolution_clock::now();
+    
     //testing the quicksort
     sortNodesByScore(needsSort);
     for(int i = 0; i < 10; i++){
         needsSort[i].printNode();
     }
 
+    auto endQuickTime = chrono::high_resolution_clock::now();
 
-
-    //testing geting the max off the top
-    cout << endl;
+    // Calculate the duration in seconds
+    chrono::duration<double> durationQuick = endHeapTime - startHeapTime;
+    double elapsedQuickTime = durationQuick.count();
     
-
-
-
-
-    cout << "Size of the binary heap after removals: " << binaryHeap.size() << endl;
+    cout << "Elapsed time Heap: " << elapsedHeapTime << " seconds" << endl;
+    cout << "Elapsed time Quick: " << elapsedQuickTime << " seconds" << std::endl;
 
 
     

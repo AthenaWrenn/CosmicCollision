@@ -5,6 +5,8 @@
         "ostream": "cpp",
         "typeinfo": "cpp",
         "cmath": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "initializer_list": "cpp",
+        "xutility": "cpp"
     }
 }
