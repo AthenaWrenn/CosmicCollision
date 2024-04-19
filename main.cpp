@@ -91,7 +91,6 @@ void importFile(vector<Node> &needsSort){
         //remove rows of incomplete data
         if(row[0].empty() || row[1].empty() || row[3].empty() || row[4].empty() || row[6].empty() || row[7].empty() || row[8].empty()){
             countSkipped++;
-            //cout << "Skipping incomplete tuple..." <<  countSkipped << endl;
         } else{
             //file is setup: name, id, nametype, recclass, mass (g), fall, year, reclat, reclong, GeoLocation
             string name = row[0];
@@ -114,10 +113,9 @@ void importFile(vector<Node> &needsSort){
             //testing updating the score of this node
             currentNode.nodeScore(currentScore);
 
-            // if(currentNode.getScore() > 0){
             needsSort.push_back(currentNode);
             countProcessed++;
-            // }
+            
            
         }  
     }
@@ -134,7 +132,6 @@ vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, floa
     //find how close the specified year is (between 0 and 1.0)
     //100 years off scores a 0
     float yearAccuracy = 1.0 - (abs(max.year - idealYear) / 100.0);
-    //cout << yearAccuracy << endl;
     matchVector.push_back(yearAccuracy);
 
     //find how close the specified location is (between 0 and 1.0)
@@ -144,16 +141,14 @@ vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, floa
     float lonDiff = max.recLon - idealLon;
     float locDiff = sqrt((latDiff * latDiff) + (lonDiff * lonDiff));
     locAccuracy = 1.0 - (locDiff / 100.0);
-    //cout << locAccuracy  << endl;
+    
     matchVector.push_back(locAccuracy);
 
     //find how close the specified size is (between 0 and 1.0)
     //100g off scores a 0
     float sizeAccuracy = 1.0 - (abs(max.mass - idealSize) / 100.0);
     //cout << sizeAccuracy << endl;
-    matchVector.push_back(sizeAccuracy);
-
-  
+    matchVector.push_back(sizeAccuracy);  
 
     return matchVector;
 }
@@ -172,14 +167,14 @@ int main()
 
     auto startHeapTime = std::chrono::high_resolution_clock::now();
 
-    //testing the binary heap
-    for(auto &node : needsSort){
-        binaryHeap.insert(node);
-    }
-    for(int i = 0; i < 10; i++){
-        Node max = binaryHeap.extractMax();
-        max.printNode();
-    }
+        //testing the binary heap
+        for(auto &node : needsSort){
+            binaryHeap.insert(node);
+        }
+        for(int i = 0; i < 10; i++){//store into vector for output
+            Node max = binaryHeap.extractMax();
+            max.printNode();
+        }
 
     auto endHeapTime = chrono::high_resolution_clock::now();
 
@@ -193,25 +188,20 @@ int main()
 
     auto startQuickTime = std::chrono::high_resolution_clock::now();
     
-    //testing the quicksort
-    sortNodesByScore(needsSort);
-    for(int i = 0; i < 10; i++){
-        needsSort[i].printNode();
-    }
+        //testing the quicksort
+        sortNodesByScore(needsSort);
+        for(int i = 0; i < 10; i++){
+            needsSort[i].printNode();
+        }
 
     auto endQuickTime = chrono::high_resolution_clock::now();
 
-    // Calculate the duration in seconds
+    //calculate the duration in seconds
     chrono::duration<double> durationQuick = endHeapTime - startHeapTime;
     double elapsedQuickTime = durationQuick.count();
     
     cout << "Elapsed time Heap: " << elapsedHeapTime << " seconds" << endl;
     cout << "Elapsed time Quick: " << elapsedQuickTime << " seconds" << std::endl;
-
-
-    
-
-    cout << "THE END" << endl;
 
     return 0;
 }
