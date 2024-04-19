@@ -43,6 +43,19 @@ public:
         cout << endl;
     }
 
+    map<string, string> getNodeInfo() {
+        map<string, string> nodeInfo;
+        nodeInfo["Score"] = to_string(score);
+        nodeInfo["Name"] = name;
+        nodeInfo["ID"] = to_string(id);
+        nodeInfo["Class"] = recClass;
+        nodeInfo["Mass"] = to_string(mass) + "g";
+        nodeInfo["Year"] = to_string(year);
+        nodeInfo["Latitude"] = to_string(recLat);
+        nodeInfo["Longitude"] = to_string(recLon);
+        return nodeInfo;
+}
+
 };
 
 class binaryMaxHeap{
