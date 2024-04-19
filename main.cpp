@@ -1,4 +1,3 @@
-
 #include <string> 
 #include <iostream>
 #include <fstream>
@@ -19,7 +18,7 @@ using namespace std;
 vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, float idealSize, Node &max);
 
 //read the csv file into the binary heap
-void importFile(binaryMaxHeap &bH, vector<Node> &nodes){
+void importFile(vector<Node> &needsSort){
 
     //take in meteorite specifications
     int idealYear;
@@ -114,15 +113,13 @@ void importFile(binaryMaxHeap &bH, vector<Node> &nodes){
             currentNode.nodeScore(currentScore);
 
             // if(currentNode.getScore() > 0){
-            nodes.push_back(currentNode);
-            bH.insert(currentNode);
+            needsSort.push_back(currentNode);
             countProcessed++;
             // }
            
         }  
     }
 
-    sortNodesByScore(nodes);
     cout << endl << "Skipped " <<  countSkipped << " invalid tuples." << endl;
     cout << "Processed " <<  countProcessed << " valid tuples." << endl;
 
@@ -165,24 +162,33 @@ int main()
 {
     //import the meteorite data into the 2 data structures
     binaryMaxHeap binaryHeap;
-    vector<Node> nodes;
+    vector<Node> needsSort;
 
-    importFile(binaryHeap, nodes);
-    cout << "Size of the binary heap: " << binaryHeap.size() << endl;
-    cout << "Size of the node list: " << nodes.size() << endl;
+    importFile(needsSort);
+
+    cout << "Size of the data: " << needsSort.size() << endl;
 
     
+    //testing the binary heap
+    for(auto &node : needsSort){
+        binaryHeap.insert(node);
+    }
+    for(int i = 0; i < 10; i++){
+        Node max = binaryHeap.extractMax();
+        max.printNode();
+    }
+
+    //testing the quicksort
+    sortNodesByScore(needsSort);
+    for(int i = 0; i < 10; i++){
+        needsSort[i].printNode();
+    }
+
+
 
     //testing geting the max off the top
     cout << endl;
-    for(int i = 0; i < 10; i++){
-        Node max = binaryHeap.extractMax();
-        cout << "Heap Sort:" << endl;
-        max.printNode();
-        cout << "Quick Sort:" << endl;
-        nodes[i].printNode();
-        cout << endl;
-    }
+    
 
 
 
