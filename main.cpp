@@ -51,9 +51,7 @@ void importFile(binaryMaxHeap &bH, vector<Node> &nodes){
     cout << "Rank importance of size(1-4): ";
     cin >> sizeRank;
 
-    int clRank;
-    cout << "Rank importance of class(1-4): ";
-    cin >> clRank;
+    
  
     string fileName = "Meteorite_Landings.csv";
     ifstream myFile(fileName);
@@ -115,10 +113,12 @@ void importFile(binaryMaxHeap &bH, vector<Node> &nodes){
             //testing updating the score of this node
             currentNode.nodeScore(currentScore);
 
-
-            nodes.push_back(currentNode);
-            bH.insert(currentNode);
-            countProcessed++;
+            if(currentNode.getScore() > 0){
+                nodes.push_back(currentNode);
+                bH.insert(currentNode);
+                countProcessed++;
+            }
+           
         }  
     }
 
@@ -164,7 +164,7 @@ vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, floa
 int main()
 {
     //import the meteorite data into the 2 data structures
-    int defaultHeapSize = 45717;
+    int defaultHeapSize = 45717;  
     binaryMaxHeap binaryHeap(defaultHeapSize);
     vector<Node> nodes;
 
@@ -176,9 +176,11 @@ int main()
     //testing geting the max off the top
     for(int i = 0; i < 10; i++){
         Node max = binaryHeap.extractMax();
+        cout << "Heap Sort:" << endl;
         max.printNode();
-
+        cout << "Quick Sort:" << endl;
         nodes[i].printNode();
+        cout << endl;
     }
 
 
