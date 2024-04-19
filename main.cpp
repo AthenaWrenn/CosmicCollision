@@ -16,9 +16,44 @@ using namespace std;
 
 //reference: geeksforgeeks.org/csv-file-management-using-c
 //reference: gormanalysis.com/blog/reading-and-writing-csv-files-with-cpp
+vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, float idealSize, Node &max);
 
 //read the csv file into the binary heap
-void importFile(binaryMaxHeap &bH){
+void importFile(binaryMaxHeap &bH, vector<Node> &nodes){
+
+    //take in meteorite specifications
+    int idealYear;
+    cout << "Specify year: ";
+    cin >> idealYear;
+
+    float idealLat;
+    cout << "Specify latitude: ";
+    cin >> idealLat;
+
+    float idealLon;
+    cout << "Specify longitude: ";
+    cin >> idealLon;
+
+    float idealSize;
+    cout << "Specify size: ";
+    cin >> idealSize;
+
+    //take in priority
+    int yearRank;
+    cout << "Rank importance of year(1-4): ";
+    cin >> yearRank;
+
+    int locRank;
+    cout << "Rank importance of location(1-4): ";
+    cin >> locRank;
+
+    int sizeRank;
+    cout << "Rank importance of size(1-4): ";
+    cin >> sizeRank;
+
+    int clRank;
+    cout << "Rank importance of class(1-4): ";
+    cin >> clRank;
  
     string fileName = "Meteorite_Landings.csv";
     ifstream myFile(fileName);
@@ -36,7 +71,9 @@ void importFile(binaryMaxHeap &bH){
     //the rest of the lines are each nodes
     int countSkipped = 0;
     int countProcessed = 0;
-    while(getline(myFile, line)){
+
+
+    while(getline(myFile, line) && countProcessed < 20) {
         stringstream s(line);
         string word;
         vector<string> row;
@@ -67,18 +104,32 @@ void importFile(binaryMaxHeap &bH){
             float recLon = stof(row[8]);
 
             Node currentNode = Node(name, id, recClass, mass, year, recLat, recLon);
+
+            //score a crash
+            vector<float> accuracies; // 0: year, 1: location, 2: size, 3: class
+            accuracies = findAccuracies(idealYear, idealLat, idealLon, idealSize, currentNode);
+
+            float currentScore = 0;
+            currentScore = (yearRank * 10 * accuracies[0]) + (locRank * 10 * accuracies[1]) + (sizeRank * 10 * accuracies[2]);
+
+            //testing updating the score of this node
+            currentNode.nodeScore(currentScore);
+
+
+            nodes.push_back(currentNode);
             bH.insert(currentNode);
             countProcessed++;
         }  
     }
 
+    sortNodesByScore(nodes);
     cout << "Skipped " <<  countSkipped << " invalid tuples." << endl;
     cout << "Processed " <<  countProcessed << " valid tuples." << endl;
 
 }
 
 //calculate the accuracy of each specification; how close a match?
-vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, float idealSize, string idealClass, Node &max){
+vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, float idealSize, Node &max){
     vector<float> matchVector;
 
     //find how close the specified year is (between 0 and 1.0)
@@ -103,15 +154,7 @@ vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, floa
     //cout << sizeAccuracy << endl;
     matchVector.push_back(sizeAccuracy);
 
-    //Does the specified class match?
-    float classAccuracy;
-    if(max.recClass == idealClass){
-        classAccuracy = 1.0;
-    } else{
-        classAccuracy = 0.0;
-    }
-    //cout << classAccuracy << endl;
-    matchVector.push_back(classAccuracy);
+  
 
     return matchVector;
 }
@@ -123,63 +166,28 @@ int main()
     //import the meteorite data into the 2 data structures
     int defaultHeapSize = 45717;
     binaryMaxHeap binaryHeap(defaultHeapSize);
-    importFile(binaryHeap);
+    vector<Node> nodes;
+
+    importFile(binaryHeap, nodes);
     cout << "Size of the binary heap: " << binaryHeap.size() << endl;
 
-    //take in meteorite specifications
-    int idealYear;
-    cout << "Specify year: ";
-    cin >> idealYear;
-
-    float idealLat;
-    cout << "Specify latitude: ";
-    cin >> idealLat;
-
-    float idealLon;
-    cout << "Specify longitude: ";
-    cin >> idealLon;
-
-    float idealSize;
-    cout << "Specify size: ";
-    cin >> idealSize;
-
-    string idealClass;
-    cout << "Specify class: ";
-    cin >> idealClass;
-
-    //take in priority
-    int yearRank;
-    cout << "Rank importance of year(1-4): ";
-    cin >> yearRank;
-
-    int locRank;
-    cout << "Rank importance of location(1-4): ";
-    cin >> locRank;
-
-    int sizeRank;
-    cout << "Rank importance of size(1-4): ";
-    cin >> sizeRank;
-
-    int clRank;
-    cout << "Rank importance of class(1-4): ";
-    cin >> clRank;
+    
 
     //testing geting the max off the top
-    Node max = binaryHeap.extractMax();
-    max.printNode();
+    for(int i = 0; i < 10; i++){
+        Node max = binaryHeap.extractMax();
+        max.printNode();
+
+        nodes[i].printNode();
+    }
+
+
+
+
     cout << "Size of the binary heap: " << binaryHeap.size() << endl;
 
 
-    //score a crash
-    vector<float> accuracies; // 0: year, 1: location, 2: size, 3: class
-    accuracies = findAccuracies(idealYear, idealLat, idealLon, idealSize, idealClass, max);
-
-    float currentScore = 0;
-    currentScore = (yearRank * 10 * accuracies[0]) + (locRank * 10 * accuracies[1]) + (sizeRank * 10 * accuracies[2]) + (clRank * 10 * accuracies[3]);
-
-    //testing updating the score of this node
-    max.nodeScore(currentScore);
-    max.printNode();
+    
 
     cout << "THE END" << endl;
 

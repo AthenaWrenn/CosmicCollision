@@ -9,7 +9,7 @@ int partition(vector<Node>& arr, int low, int high) {
     float pivot = arr[high].getScore();
     int i = low - 1;
     for (int j = low; j < high; j++) {
-        if (arr[j].getScore() <= pivot) {
+        if (arr[j].getScore() >= pivot) { // Change comparison to >= for descending order
             i++;
             swap(arr[i], arr[j]);
         }
@@ -27,7 +27,7 @@ void quickSort(vector<Node>& arr, int low, int high) {
     }
 }
 
-// Function to sort the vector of Nodes based on their scores
+// Function to sort the vector of Nodes based on their scores in descending order
 void sortNodesByScore(vector<Node>& nodes) {
     quickSort(nodes, 0, nodes.size() - 1);
 }
