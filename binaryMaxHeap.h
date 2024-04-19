@@ -53,7 +53,7 @@ class binaryMaxHeap{
 
     public:
         //constructor
-        binaryMaxHeap(int capacity);
+        binaryMaxHeap(int capacity = 45717);
 
         //destructor
         ~binaryMaxHeap();

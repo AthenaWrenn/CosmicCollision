@@ -102,7 +102,7 @@ void importFile(binaryMaxHeap &bH, vector<Node> &nodes){
             float recLon = stof(row[8]);
 
             Node currentNode = Node(name, id, recClass, mass, year, recLat, recLon);
-
+        
             //score a crash
             vector<float> accuracies; // 0: year, 1: location, 2: size, 3: class
             accuracies = findAccuracies(idealYear, idealLat, idealLon, idealSize, currentNode);
@@ -123,7 +123,7 @@ void importFile(binaryMaxHeap &bH, vector<Node> &nodes){
     }
 
     sortNodesByScore(nodes);
-    cout << "Skipped " <<  countSkipped << " invalid tuples." << endl;
+    cout << endl << "Skipped " <<  countSkipped << " invalid tuples." << endl;
     cout << "Processed " <<  countProcessed << " valid tuples." << endl;
 
 }
@@ -164,8 +164,8 @@ vector<float> findAccuracies(int idealYear, float idealLat, float idealLon, floa
 int main()
 {
     //import the meteorite data into the 2 data structures
-    int defaultHeapSize = 45717;  
-    binaryMaxHeap binaryHeap(defaultHeapSize);
+    // int defaultHeapSize = 45717;  
+    binaryMaxHeap binaryHeap;
     vector<Node> nodes;
 
     importFile(binaryHeap, nodes);
@@ -174,6 +174,7 @@ int main()
     
 
     //testing geting the max off the top
+    cout << endl;
     for(int i = 0; i < 10; i++){
         Node max = binaryHeap.extractMax();
         cout << "Heap Sort:" << endl;
@@ -186,7 +187,7 @@ int main()
 
 
 
-    cout << "Size of the binary heap: " << binaryHeap.size() << endl;
+    cout << "Size of the binary heap after removals: " << binaryHeap.size() << endl;
 
 
     
