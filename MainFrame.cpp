@@ -8,21 +8,23 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 }
 
 
-void MainFrame::OnButtonClicked(wxCommandEvent& evt) {
+void MainFrame::OnSearchButtonClicked(wxCommandEvent& evt) {
 	//Generates the results using the backend created by Joseph and Athena
 	vector<Node> results = algorithm.algorithm(wxAtoi(this->yearBox->GetValue()), wxAtof(this->latitudeBox->GetValue()), wxAtof(this->longitudeBox->GetValue()), wxAtof(this->sizeBox->GetValue()), wxAtoi(this->yearRankBox->GetValue()), wxAtoi(this->locationRankBox->GetValue()), wxAtoi(this->sizeRankBox->GetValue()));
 	
 	//Hides the main panel and shows the new panel (screen change)
-	this->mainPanel->Hide();
-	this->mainPanel->SetSize(wxSize(0,0));
+	delete mainPanel;
 	this->resultsPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, this->GetClientSize());
 	this->resultsPanel->Show();
 
 	//Generates the list of meteors for the user
-	wxStaticText* resultsText = new wxStaticText(resultsPanel, wxID_ANY, "Closest Metorites:", wxPoint(350, 50), wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
-	resultsText->SetFont(this->GetFont().Scale(3));
+	this->resultsText = new wxStaticText(resultsPanel, wxID_ANY, "Closest Metorites:", wxPoint(300, 50), wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
+	this->resultsText->SetFont(this->GetFont().Scale(3));
 	wxArrayString resArr;
 	int rankCount = 1;
+
+	this->backButton = new wxButton(resultsPanel, wxID_ANY, "Return to Search Menu", wxPoint(450, 525));
+	this->backButton->Bind(wxEVT_BUTTON, &MainFrame::OnBackButtonClicked, this);
 
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -46,13 +48,13 @@ void MainFrame::OnButtonClicked(wxCommandEvent& evt) {
 			rankCount++;
 		}
 
-		wxListBox* resultsList = new wxListBox(resultsPanel, wxID_ANY, wxPoint(25, 200), wxDefaultSize, resArr);
+		this->resultsList = new wxListBox(resultsPanel, wxID_ANY, wxPoint(25, 200), wxDefaultSize, resArr);
 
 		wxLogStatus("Results run");
 	
 	} else {
 		resArr.Add("NO SIMILAR METEORS FOUND");
-		wxListBox* resultsList = new wxListBox(resultsPanel, wxID_ANY, wxPoint(350, 200), wxDefaultSize, resArr);
+		this->resultsList = new wxListBox(resultsPanel, wxID_ANY, wxPoint(325, 200), wxSize(100, 100), resArr);
 		resultsList->SetFont(this->GetFont().Scale(1.25));
 		resultsList->Fit();
 		
@@ -65,8 +67,13 @@ void MainFrame::OnButtonClicked(wxCommandEvent& evt) {
 	}
 }
 
+void MainFrame::OnBackButtonClicked(wxCommandEvent& evt) {
+	delete resultsPanel;
+	createControls();
+}
+
 void MainFrame::createControls() {
-	this->mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
+	this->mainPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, this->GetClientSize(), wxWANTS_CHARS);
 
 	this->frameTitle = new wxStaticText(mainPanel, wxID_ANY, "Meteorite Landing Finder", wxPoint(275, 50), wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
 	this->frameTitle->SetFont(this->GetFont().Scale(2));
@@ -82,7 +89,7 @@ void MainFrame::createControls() {
 	this->locationRankBox = new wxTextCtrl(mainPanel, wxID_ANY, "Rank importance of location(1-4):", wxPoint(450, 325), wxSize(200, -1));
 	this->sizeRankBox = new wxTextCtrl(mainPanel, wxID_ANY, "Rank importance of size(1-4):", wxPoint(450, 425), wxSize(200, -1));
 	this->enterButton = new wxButton(mainPanel, wxID_ANY, "Find meteorites!", wxPoint(450, 525));
-
-	this->enterButton->Bind(wxEVT_BUTTON, &MainFrame::OnButtonClicked, this);
+	
+	this->enterButton->Bind(wxEVT_BUTTON, &MainFrame::OnSearchButtonClicked, this);
 }
 

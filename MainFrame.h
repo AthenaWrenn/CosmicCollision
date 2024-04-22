@@ -9,7 +9,8 @@ public:
 
 private:
 	// Outlines lambdas which are used to define what occurs during given events
-	void OnButtonClicked(wxCommandEvent& evt);
+	void OnSearchButtonClicked(wxCommandEvent& evt);
+	void OnBackButtonClicked(wxCommandEvent& evt);
 
 	void createControls();
 
@@ -29,6 +30,10 @@ private:
 	wxButton* enterButton;
 
 	std::vector<Node> results;
+
+	wxStaticText* resultsText;
+	wxListBox* resultsList;
+	wxButton* backButton;
 
 	wxPanel* mainPanel;
 	wxPanel* resultsPanel;
