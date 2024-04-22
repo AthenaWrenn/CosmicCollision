@@ -6,7 +6,7 @@
 using namespace std;
 
 // Partition function for Quick Sort
-int partition(vector<Node>& arr, int low, int high) {
+static int partition(vector<Node>& arr, int low, int high) {
     float pivot = arr[high].getScore();
     int i = low - 1;
     for (int j = low; j < high; j++) {
@@ -20,7 +20,7 @@ int partition(vector<Node>& arr, int low, int high) {
 }
 
 // Quick Sort function
-void quickSort(vector<Node>& arr, int low, int high) {
+static void quickSort(vector<Node>& arr, int low, int high) {
     if (low < high) {
         int pi = partition(arr, low, high);
         quickSort(arr, low, pi - 1);
@@ -29,6 +29,6 @@ void quickSort(vector<Node>& arr, int low, int high) {
 }
 
 // Function to sort the vector of Nodes based on their scores in descending order
-void sortNodesByScore(vector<Node>& nodes) {
+static void sortNodesByScore(vector<Node>& nodes) {
     quickSort(nodes, 0, nodes.size() - 1);
 }
