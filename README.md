@@ -1,8 +1,10 @@
 # COP3530 - Project 3 - Cosmic Collision
 This repository serves to hold project 3 of Data Structures and Algorithms, Cosmic Collision.
 
-## Getting Started
+## Repository Structure
+The repository includes all of the dependencies necessary for development using wxWidgets. Thus, there are debug folders for both Win32 and x64 development. For ease of access, the source files have been seperated into a source folder "src".
 
+## Getting Started
 - In order to run this program, all the user must do is run the .exe file provided. However, the Meteorite_Landings.csv file MUST be in the same directory, or an exception will be thrown.
 - To set up the program for development, it is recommended to follow the steps provided in [this](https://www.youtube.com/watch?v=ONYW3hBbk-8) video to set up wxWidgets.
 
